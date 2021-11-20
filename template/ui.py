@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import *
 
 from electroncash.i18n import _
 from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin
-
+from datetime import datetime
+from electroncash.commands import Commands
 
 class Ui(MyTreeWidget, MessageBoxMixin):
     def __init__(self, parent, plugin, wallet_name):
@@ -25,8 +26,13 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         pass
 
     def on_update(self):
+        w = self.parent
+        c = Commands(w.config, w.wallet, w.network, lambda: set_json(True))
+
+        for x in c.history():
+            value = float(x["value"]) * 100000000
         item=QTreeWidgetItem([
-            _("Bla"),
+            _(str(value)),
             _("Blabla"),
             _("Blablabla")])
         self.addTopLevelItem(item)
