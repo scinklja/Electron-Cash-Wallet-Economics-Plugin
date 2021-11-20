@@ -25,4 +25,8 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         pass
 
     def on_update(self):
-        pass
+        item=QTreeWidgetItem([
+            _("Bla"),
+            _("Blabla"),
+            _("Blablabla")])
+        self.addTopLevelItem(item)
