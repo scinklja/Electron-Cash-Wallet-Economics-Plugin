@@ -28,11 +28,29 @@ class Ui(MyTreeWidget, MessageBoxMixin):
     def on_update(self):
         w = self.parent
         c = Commands(w.config, w.wallet, w.network, lambda: set_json(True))
+        total_invest = 0
 
         for x in c.history():
             value = float(x["value"]) * 100000000
-        item=QTreeWidgetItem([
-            _(str(value)),
-            _("Blabla"),
-            _("Blablabla")])
-        self.addTopLevelItem(item)
+            timestamp = datetime.fromtimestamp(x["timestamp"])
+            investment = float(self.parent.fx.historical_value_str(value, timestamp))
+            total_invest = total_invest + investment
+
+        balance = float(c.history()[0]["balance"]) * 100000000
+        balance_bch = float(c.history()[0]["balance"])
+
+        balance_usd = float(self.parent.fx.historical_value_str(balance, datetime.now()))
+
+        profit_usd = balance_usd - total_invest
+
+        item1=QTreeWidgetItem([
+            _("Current balance"),
+            _(str(balance_usd)),
+            _(str(balance_bch))])
+        self.addTopLevelItem(item1)
+
+        item2 = QTreeWidgetItem([
+            _("Profit"),
+            _(str(balance_usd)),
+            _(str(balance_bch))])
+        self.addTopLevelItem(item2)
