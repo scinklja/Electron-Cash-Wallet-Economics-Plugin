@@ -52,11 +52,18 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_bch = total_sent_bch + value_bch
 
-        balance = decimal.Decimal(c.history()[0]["balance"]) * 100000000
-        balance_bch = decimal.Decimal(c.history()[0]["balance"])
+        if len(c.history()) == 0:
+            balance = 0
+        else:
+            balance = decimal.Decimal(c.history()[0]["balance"]) * 100000000
+
+        if len(c.history()) == 0:
+            balance_bch = 0
+        else:
+            balance_bch = decimal.Decimal(c.history()[0]["balance"])
 
 
-        balance_usd = decimal.Decimal(self.parent.fx.historical_value_str(balance, datetime.now()))
+        balance_usd = self.parent.fx.historical_value(balance, datetime.now())
 
         profit_usd = balance_usd - total_invest
 
