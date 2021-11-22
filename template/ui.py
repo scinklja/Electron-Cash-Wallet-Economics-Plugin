@@ -1,3 +1,5 @@
+import decimal
+
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -36,10 +38,10 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
 
         for x in c.history():
-            value = float(x["value"]) * 100000000
-            value_bch= float(x["value"])
+            value = decimal.Decimal(x["value"]) * 100000000
+            value_bch= decimal.Decimal(x["value"])
             timestamp = datetime.fromtimestamp(x["timestamp"])
-            investment = float(self.parent.fx.historical_value_str(value, timestamp))
+            investment = self.parent.fx.historical_value(value, timestamp)
             total_invest = total_invest + investment
             if investment > 0:
                 total_received = total_received + investment
@@ -50,11 +52,11 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_bch = total_sent_bch + value_bch
 
-        balance = float(c.history()[0]["balance"]) * 100000000
-        balance_bch = float(c.history()[0]["balance"])
+        balance = decimal.Decimal(c.history()[0]["balance"]) * 100000000
+        balance_bch = decimal.Decimal(c.history()[0]["balance"])
 
 
-        balance_usd = float(self.parent.fx.historical_value_str(balance, datetime.now()))
+        balance_usd = decimal.Decimal(self.parent.fx.historical_value_str(balance, datetime.now()))
 
         profit_usd = balance_usd - total_invest
 
