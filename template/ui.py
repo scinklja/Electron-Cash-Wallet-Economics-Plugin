@@ -31,10 +31,13 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         total_invest = 0
         total_received = 0
         total_sent = 0
+        total_received_bch = 0
+        total_sent_bch = 0
 
 
         for x in c.history():
             value = float(x["value"]) * 100000000
+            value_bch= float(x["value"])
             timestamp = datetime.fromtimestamp(x["timestamp"])
             investment = float(self.parent.fx.historical_value_str(value, timestamp))
             total_invest = total_invest + investment
@@ -42,9 +45,14 @@ class Ui(MyTreeWidget, MessageBoxMixin):
                 total_received = total_received + investment
             else:
                 total_sent = total_sent + investment
+            if value_bch > 0:
+                total_received_bch = total_received_bch + value_bch
+            else:
+                total_sent_bch = total_sent_bch + value_bch
 
         balance = float(c.history()[0]["balance"]) * 100000000
         balance_bch = float(c.history()[0]["balance"])
+
 
         balance_usd = float(self.parent.fx.historical_value_str(balance, datetime.now()))
 
@@ -63,17 +71,17 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         item2 = QTreeWidgetItem([
             _("Profit"),
             _(str(profit_usd)),
-            _(str(balance_bch))])
+            _(str("N/A"))])
         self.addTopLevelItem(item2)
 
         item3 = QTreeWidgetItem([
             _("Total received"),
             _(str(total_received)),
-            _(str(balance_bch))])
+            _(str(total_received_bch))])
         self.addTopLevelItem(item3)
 
         item4 = QTreeWidgetItem([
             _("Total sent"),
             _(str(total_sent)),
-            _(str(balance_bch))])
+            _(str(total_sent_bch))])
         self.addTopLevelItem(item4)
