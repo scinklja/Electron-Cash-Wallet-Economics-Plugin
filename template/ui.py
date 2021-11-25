@@ -38,17 +38,18 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
 
         for x in c.history():
-            value = decimal.Decimal(x["value"]) * 100000000
-            value_bch= decimal.Decimal(x["value"])
+            value_sats = decimal.Decimal(x["value"]) * 100000000
+            value_bch = decimal.Decimal(x["value"])
             timestamp = datetime.fromtimestamp(x["timestamp"])
-            investment = self.parent.fx.historical_value(value, timestamp)
-            total_invest = total_invest + investment
-            if investment > 0:
-                total_received = total_received + investment
+            historical_fiat_value = self.parent.fx.historical_value(value_sats, timestamp)
             if historical_fiat_value is None:
                 return
+
+            total_invest = total_invest + historical_fiat_value
+            if historical_fiat_value > 0:
+                total_received = total_received + historical_fiat_value
             else:
-                total_sent = total_sent + investment
+                total_sent = total_sent + historical_fiat_value
             if value_bch > 0:
                 total_received_bch = total_received_bch + value_bch
             else:
@@ -65,9 +66,9 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             balance_bch = decimal.Decimal(c.history()[0]["balance"])
 
 
-        balance_usd = self.parent.fx.historical_value(balance, datetime.now())
+        balance_fiat = self.parent.fx.historical_value(balance, datetime.now())
 
-        profit_usd = balance_usd - total_invest
+        profit_fiat = balance_fiat - total_invest
 
 
 
@@ -75,13 +76,13 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         item1=QTreeWidgetItem([
             _("Current balance"),
-            _(str(balance_usd)),
+            _(str(balance_fiat)),
             _(str(balance_bch))])
         self.addTopLevelItem(item1)
 
         item2 = QTreeWidgetItem([
             _("Profit"),
-            _(str(profit_usd)),
+            _(str(profit_fiat)),
             _(str("N/A"))])
         self.addTopLevelItem(item2)
 
