@@ -28,24 +28,24 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         pass
 
     def on_update(self):
-        w = self.parent
-        c = Commands(w.config, w.wallet, w.network, lambda: set_json(True))
-        total_invest = 0
+        window = self.parent
+        commands = Commands(window.config, window.wallet, window.network, lambda: set_json(True))
+        total_historical_fiat_value = 0
         total_received = 0
         total_sent = 0
         total_received_bch = 0
         total_sent_bch = 0
 
 
-        for x in c.history():
-            value_sats = decimal.Decimal(x["value"]) * 100000000
-            value_bch = decimal.Decimal(x["value"])
-            timestamp = datetime.fromtimestamp(x["timestamp"])
+        for tx in commands.history():
+            value_sats = decimal.Decimal(tx["value"]) * 100000000
+            value_bch = decimal.Decimal(tx["value"])
+            timestamp = datetime.fromtimestamp(tx["timestamp"])
             historical_fiat_value = self.parent.fx.historical_value(value_sats, timestamp)
             if historical_fiat_value is None:
                 return
 
-            total_invest = total_invest + historical_fiat_value
+            total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
             if historical_fiat_value > 0:
                 total_received = total_received + historical_fiat_value
             else:
@@ -55,20 +55,20 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_bch = total_sent_bch + value_bch
 
-        if len(c.history()) == 0:
+        if len(commands.history()) == 0:
             balance = 0
         else:
-            balance = decimal.Decimal(c.history()[0]["balance"]) * 100000000
+            balance = decimal.Decimal(commands.history()[0]["balance"]) * 100000000
 
-        if len(c.history()) == 0:
+        if len(commands.history()) == 0:
             balance_bch = 0
         else:
-            balance_bch = decimal.Decimal(c.history()[0]["balance"])
+            balance_bch = decimal.Decimal(commands.history()[0]["balance"])
 
 
         balance_fiat = self.parent.fx.historical_value(balance, datetime.now())
 
-        profit_fiat = balance_fiat - total_invest
+        profit_fiat = balance_fiat - total_historical_fiat_value
 
 
 
