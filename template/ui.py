@@ -45,6 +45,8 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             total_invest = total_invest + investment
             if investment > 0:
                 total_received = total_received + investment
+            if historical_fiat_value is None:
+                return
             else:
                 total_sent = total_sent + investment
             if value_bch > 0:
