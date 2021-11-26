@@ -9,6 +9,7 @@ from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin
 from datetime import datetime
 from electroncash.commands import Commands
 
+
 class Ui(MyTreeWidget, MessageBoxMixin):
     def __init__(self, parent, plugin, wallet_name):
         MyTreeWidget.__init__(self, parent, self.create_menu, [
@@ -33,13 +34,12 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         total_historical_fiat_value = 0
         total_received = 0
         total_sent = 0
-        total_received_bch = 0
-        total_sent_bch = 0
+        total_received_sats = 0
+        total_sent_sats = 0
 
 
         for tx in commands.history():
             value_sats = decimal.Decimal(tx["value"]) * 100000000
-            value_bch = decimal.Decimal(tx["value"])
             timestamp = datetime.fromtimestamp(tx["timestamp"])
             historical_fiat_value = self.parent.fx.historical_value(value_sats, timestamp)
             if historical_fiat_value is None:
@@ -50,20 +50,16 @@ class Ui(MyTreeWidget, MessageBoxMixin):
                 total_received = total_received + historical_fiat_value
             else:
                 total_sent = total_sent + historical_fiat_value
-            if value_bch > 0:
-                total_received_bch = total_received_bch + value_bch
+            if value_sats > 0:
+                total_received_sats = total_received_sats + value_sats
             else:
-                total_sent_bch = total_sent_bch + value_bch
+                total_sent_sats = total_sent_sats + value_sats
 
         if len(commands.history()) == 0:
             balance = 0
         else:
             balance = decimal.Decimal(commands.history()[0]["balance"]) * 100000000
 
-        if len(commands.history()) == 0:
-            balance_bch = 0
-        else:
-            balance_bch = decimal.Decimal(commands.history()[0]["balance"])
 
 
         balance_fiat = self.parent.fx.historical_value(balance, datetime.now())
@@ -77,7 +73,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         item1=QTreeWidgetItem([
             _("Current balance"),
             _(str(balance_fiat)),
-            _(str(balance_bch))])
+            _(str(self.parent.format_amount(balance, whitespaces=True)))])
         self.addTopLevelItem(item1)
 
         item2 = QTreeWidgetItem([
@@ -89,11 +85,11 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         item3 = QTreeWidgetItem([
             _("Total received"),
             _(str(total_received)),
-            _(str(total_received_bch))])
+            _(str(self.parent.format_amount(total_received_sats, whitespaces=True)))])
         self.addTopLevelItem(item3)
 
         item4 = QTreeWidgetItem([
             _("Total sent"),
             _(str(total_sent)),
-            _(str(total_sent_bch))])
+            _(str(self.parent.format_amount(total_sent_sats, whitespaces=True)))])
         self.addTopLevelItem(item4)
