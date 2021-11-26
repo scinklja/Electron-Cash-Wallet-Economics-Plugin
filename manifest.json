@@ -1,10 +1,10 @@
 {
-    "display_name": "Template",
+    "display_name": "Wallet Economics",
     "version": "1.0",
-    "description": "Plugin Template",
-    "project_url": "https://github.com/KarolTrzeszczkowski/Electron-Cash-Plugin-Template/",
+    "description": "This plugin shows you a couple key wallet economics stats.",
+    "project_url": "https://github.com/scinklja/Electron-Cash-Wallet-Economics-Plugin",
     "minimum_ec_version": "3.2",
-    "package_name": "template",
+    "package_name": "wallet-economics",
     "available_for": [
         "qt"
     ]

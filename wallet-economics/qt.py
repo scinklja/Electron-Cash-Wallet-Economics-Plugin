@@ -18,10 +18,10 @@ class Plugin(BasePlugin):
         self.wallet_payment_lists = {}
 
     def fullname(self):
-        return 'Template'
+        return 'Wallet Economics'
 
     def description(self):
-        return _("Plugin Template")
+        return _("This plugin shows you a couple key wallet economics stats.")
 
     def is_available(self):
         if self.is_version_compatible is None:
@@ -85,7 +85,7 @@ class Plugin(BasePlugin):
         tab = window.create_list_tab(l)
         self.wallet_payment_tabs[wallet_name] = tab
         self.wallet_payment_lists[wallet_name] = l
-        window.tabs.addTab(tab, QIcon(":icons/preferences.png"), _('Template'))
+        window.tabs.addTab(tab, QIcon(":icons/preferences.png"), _('Wallet Economics'))
 
     def remove_ui_for_wallet(self, wallet_name, window):
 
