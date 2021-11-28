@@ -32,8 +32,8 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         window = self.parent
         commands = Commands(window.config, window.wallet, window.network, lambda: set_json(True))
         total_historical_fiat_value = 0
-        total_received = 0
-        total_sent = 0
+        total_received_fiat = 0
+        total_sent_fiat = 0
         total_received_sats = 0
         total_sent_sats = 0
 
@@ -47,9 +47,9 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
             if historical_fiat_value > 0:
-                total_received = total_received + historical_fiat_value
+                total_received_fiat = total_received_fiat + historical_fiat_value
             else:
-                total_sent = total_sent + historical_fiat_value
+                total_sent_fiat = total_sent_fiat + historical_fiat_value
             if value_sats > 0:
                 total_received_sats = total_received_sats + value_sats
             else:
@@ -72,24 +72,24 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         item1=QTreeWidgetItem([
             _("Current balance"),
-            _(str(balance_fiat)),
+            _(self.parent.fx.ccy_amount_str(balance_fiat, True)),
             _(str(self.parent.format_amount(balance, whitespaces=True)))])
         self.addTopLevelItem(item1)
 
         item2 = QTreeWidgetItem([
             _("Profit"),
-            _(str(profit_fiat)),
+            _(self.parent.fx.ccy_amount_str(profit_fiat, True)),
             _(str("N/A"))])
         self.addTopLevelItem(item2)
 
         item3 = QTreeWidgetItem([
             _("Total received"),
-            _(str(total_received)),
+            _(self.parent.fx.ccy_amount_str(total_received_fiat, True)),
             _(str(self.parent.format_amount(total_received_sats, whitespaces=True)))])
         self.addTopLevelItem(item3)
 
         item4 = QTreeWidgetItem([
             _("Total sent"),
-            _(str(total_sent)),
+            _(self.parent.fx.ccy_amount_str(total_sent_fiat, True)),
             _(str(self.parent.format_amount(total_sent_sats, whitespaces=True)))])
         self.addTopLevelItem(item4)
