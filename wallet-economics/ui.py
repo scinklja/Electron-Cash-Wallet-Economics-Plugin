@@ -14,7 +14,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
     def __init__(self, parent, plugin, wallet_name):
         MyTreeWidget.__init__(self, parent, self.create_menu, [
             _(''),
-            _('Fiat'),
+            _(parent.fx.ccy),
             _('BCH'),
 
         ], 0, [])
