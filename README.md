@@ -17,4 +17,4 @@ The plugin is not intended to calculate profit for tax purposes.
 ## Donate
 
 ![donate](/donate.png)
-bitcoincash:qq93dq0j3uez8m995lrkx4a6n48j2fckfuwdaqeej2
+bitcoincash:qrr8j5uz6dpy7gh3d2aatj9uzc00f6guzgvzurpn7d
