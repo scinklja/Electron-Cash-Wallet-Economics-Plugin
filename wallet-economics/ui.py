@@ -55,6 +55,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_sats = total_sent_sats + value_sats
 
+
         if len(commands.history()) == 0:
             balance = 0
         else:
@@ -66,6 +67,9 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         profit_fiat = balance_fiat - total_historical_fiat_value
 
+        average_received_BCH_price = total_received_fiat/total_received_sats * 100000000
+
+        average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
 
 
 
@@ -79,7 +83,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         item2 = QTreeWidgetItem([
             _("Profit"),
             _(self.parent.fx.ccy_amount_str(profit_fiat, True)),
-            _(str("N/A"))])
+            _(str(" "))])
         self.addTopLevelItem(item2)
 
         item3 = QTreeWidgetItem([
@@ -93,3 +97,15 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             _(self.parent.fx.ccy_amount_str(total_sent_fiat, True)),
             _(str(self.parent.format_amount(total_sent_sats, whitespaces=True)))])
         self.addTopLevelItem(item4)
+
+        item5 = QTreeWidgetItem([
+            _("Average received BCH price"),
+            _(self.parent.fx.ccy_amount_str(average_received_BCH_price, True)),
+            _(str(" "))])
+        self.addTopLevelItem(item5)
+
+        item6 = QTreeWidgetItem([
+            _("Average sent BCH price"),
+            _(self.parent.fx.ccy_amount_str(average_sent_BCH_price, True)),
+            _(str(" "))])
+        self.addTopLevelItem(item6)
