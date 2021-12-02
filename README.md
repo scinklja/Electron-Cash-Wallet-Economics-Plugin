@@ -2,6 +2,7 @@
 
 This plugin shows you a couple key wallet economics stats.
 
+![screenshot](/screenshot.png)
 
 Its aim is to help people drop fiat and use BCH instead, by alleviating following issues:
 
