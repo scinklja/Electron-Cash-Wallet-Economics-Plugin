@@ -41,7 +41,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         for tx in commands.history():
             value_sats = decimal.Decimal(tx["value"]) * 100000000
             timestamp = datetime.fromtimestamp(tx["timestamp"])
-            historical_fiat_value = self.parent.fx.historical_value(value_sats, timestamp)
+            historical_fiat_value = window.fx.historical_value(value_sats, timestamp)
             if historical_fiat_value is None:
                 return
 
@@ -55,15 +55,15 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_sats = total_sent_sats + value_sats
 
-
-        if len(commands.history()) == 0:
-            balance = 0
+        history = commands.history()
+        if len(history) == 0:
+            balance_sats = 0
         else:
-            balance = decimal.Decimal(commands.history()[0]["balance"]) * 100000000
+            balance_sats = decimal.Decimal(history[0]["balance"]) * 100000000
 
 
 
-        balance_fiat = self.parent.fx.historical_value(balance, datetime.now())
+        balance_fiat = window.fx.historical_value(balance_sats, datetime.now())
 
         profit_fiat = balance_fiat - total_historical_fiat_value
 
@@ -76,37 +76,37 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         item1=QTreeWidgetItem([
             _("Current balance"),
-            _(self.parent.fx.ccy_amount_str(balance_fiat, True)),
-            _(str(self.parent.format_amount(balance, whitespaces=True)))])
+            _(window.fx.ccy_amount_str(balance_fiat, True)),
+            _(str(window.format_amount(balance_sats, whitespaces=True)))])
         items.append(item1)
 
         item2 = QTreeWidgetItem([
             _("Profit"),
-            _(self.parent.fx.ccy_amount_str(profit_fiat, True)),
+            _(window.fx.ccy_amount_str(profit_fiat, True)),
             _(str(" "))])
         items.append(item2)
 
         item3 = QTreeWidgetItem([
             _("Total received"),
-            _(self.parent.fx.ccy_amount_str(total_received_fiat, True)),
-            _(str(self.parent.format_amount(total_received_sats, whitespaces=True)))])
+            _(window.fx.ccy_amount_str(total_received_fiat, True)),
+            _(str(window.format_amount(total_received_sats, whitespaces=True)))])
         items.append(item3)
 
         item4 = QTreeWidgetItem([
             _("Total sent"),
-            _(self.parent.fx.ccy_amount_str(total_sent_fiat, True)),
-            _(str(self.parent.format_amount(total_sent_sats, whitespaces=True)))])
+            _(window.fx.ccy_amount_str(total_sent_fiat, True)),
+            _(str(window.format_amount(total_sent_sats, whitespaces=True)))])
         items.append(item4)
 
         item5 = QTreeWidgetItem([
             _("Average received BCH price"),
-            _(self.parent.fx.ccy_amount_str(average_received_BCH_price, True)),
+            _(window.fx.ccy_amount_str(average_received_BCH_price, True)),
             _(str(" "))])
         items.append(item5)
 
         item6 = QTreeWidgetItem([
             _("Average sent BCH price"),
-            _(self.parent.fx.ccy_amount_str(average_sent_BCH_price, True)),
+            _(window.fx.ccy_amount_str(average_sent_BCH_price, True)),
             _(str(" "))])
         items.append(item6)
         
