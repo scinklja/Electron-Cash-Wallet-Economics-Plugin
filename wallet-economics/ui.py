@@ -15,7 +15,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         MyTreeWidget.__init__(self, parent, self.create_menu, [
             _(''),
             _(parent.fx.ccy),
-            _('BCH'),
+            _(parent.base_unit()),
 
         ], 0, [])
 
@@ -38,7 +38,8 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         total_sent_sats = 0
 
 
-        for tx in commands.history():
+        history = commands.history()
+        for tx in history:
             value_sats = decimal.Decimal(tx["value"]) * 100000000
             timestamp = datetime.fromtimestamp(tx["timestamp"])
             historical_fiat_value = window.fx.historical_value(value_sats, timestamp)
@@ -55,7 +56,6 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             else:
                 total_sent_sats = total_sent_sats + value_sats
 
-        history = commands.history()
         if len(history) == 0:
             balance_sats = 0
         else:
@@ -116,4 +116,4 @@ class Ui(MyTreeWidget, MessageBoxMixin):
         for item in items:
             for column in [1, 2]:
                 item.setFont(column, monospaceFont)
-                item.setTextAlignment(column, Qt.AlignRight)
+                item.setTextAlignment(column, Qt.AlignRight | Qt.AlignVCenter)
