@@ -77,6 +77,11 @@ class Plugin(BasePlugin):
         window = self.wallet_windows[wallet_name]
         del self.wallet_windows[wallet_name]
         self.remove_ui_for_wallet(wallet_name, window)
+        
+    @hook
+    def window_update_status(self, window):
+        wallet_name = window.wallet.basename()   
+        self.refresh_ui_for_wallet(wallet_name)
 
 
     def add_ui_for_wallet(self, wallet_name, window):

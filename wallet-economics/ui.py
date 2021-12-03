@@ -5,7 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from electroncash.i18n import _
-from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin, MONOSPACE_FONT
+from electroncash.util import profiler
+from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin, MONOSPACE_FONT, rate_limited
 from datetime import datetime
 from electroncash.commands import Commands
 
@@ -17,18 +18,24 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             _(parent.fx.ccy),
             _(parent.base_unit()),
 
-        ], 0, [])
+        ], 0, [], deferred_updates=True)
 
         self.plugin = plugin
         self.wallet_name = wallet_name
 
     def create_menu(self):
         pass
+        
+    @rate_limited(5.0, classlevel=True, ts_after=True) # We rate limit the refresh to no more than once every X seconds, app-wide
+    def update(self):
+        super().update()
 
     def on_delete(self):
         pass
 
+    @profiler
     def on_update(self):
+        self.clear()
         window = self.parent
         commands = Commands(window.config, window.wallet, window.network, lambda: set_json(True))
         total_historical_fiat_value = 0
