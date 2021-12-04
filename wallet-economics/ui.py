@@ -13,15 +13,19 @@ from electroncash.commands import Commands
 
 class Ui(MyTreeWidget, MessageBoxMixin):
     def __init__(self, parent, plugin, wallet_name):
-        MyTreeWidget.__init__(self, parent, self.create_menu, [
-            _(''),
-            _(parent.fx.ccy),
-            _(parent.base_unit()),
-
-        ], 0, [], deferred_updates=True)
+        MyTreeWidget.__init__(self, parent, self.create_menu, [], 0, [], deferred_updates=True)
+        self.refresh_headers()
 
         self.plugin = plugin
         self.wallet_name = wallet_name
+        
+    def refresh_headers(self):
+        headers = [
+            _(''),
+            _(self.parent.fx.ccy),
+            _(self.parent.base_unit()),
+        ]
+        self.update_headers(headers)
 
     def create_menu(self):
         pass
@@ -36,6 +40,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
     @profiler
     def on_update(self):
         self.clear()
+        self.refresh_headers()
         window = self.parent
         commands = Commands(window.config, window.wallet, window.network, lambda: set_json(True))
         total_historical_fiat_value = 0
