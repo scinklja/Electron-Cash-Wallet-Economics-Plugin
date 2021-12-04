@@ -9,9 +9,10 @@ from electroncash.util import profiler
 from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin, MONOSPACE_FONT, rate_limited
 from datetime import datetime
 from electroncash.commands import Commands
+from electroncash.util import PrintError
 
 
-class Ui(MyTreeWidget, MessageBoxMixin):
+class Ui(MyTreeWidget):
     def __init__(self, parent, plugin, wallet_name):
         MyTreeWidget.__init__(self, parent, self.create_menu, [], 0, [], deferred_updates=True)
         self.refresh_headers()
@@ -57,6 +58,7 @@ class Ui(MyTreeWidget, MessageBoxMixin):
             historical_fiat_value = window.fx.historical_value(value_sats, timestamp)
             if historical_fiat_value is None:
                 return
+                #self.plugin.print_error("ni ni")
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
             if historical_fiat_value > 0:
@@ -79,9 +81,15 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         profit_fiat = balance_fiat - total_historical_fiat_value
 
-        average_received_BCH_price = total_received_fiat/total_received_sats * 100000000
+        if total_received_sats == 0:
+            average_received_BCH_price = None
+        else:
+            average_received_BCH_price = total_received_fiat/total_received_sats * 100000000
 
-        average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
+        if total_sent_sats == 0:
+            average_sent_BCH_price = None
+        else:
+            average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
 
 
         items = []
@@ -112,13 +120,13 @@ class Ui(MyTreeWidget, MessageBoxMixin):
 
         item5 = QTreeWidgetItem([
             _("Average received BCH price"),
-            _(window.fx.ccy_amount_str(average_received_BCH_price, True)),
+            _(window.fx.ccy_amount_str(average_received_BCH_price, True) if average_received_BCH_price is not None else "N/A"),
             _(str(" "))])
         items.append(item5)
 
         item6 = QTreeWidgetItem([
             _("Average sent BCH price"),
-            _(window.fx.ccy_amount_str(average_sent_BCH_price, True)),
+            _(window.fx.ccy_amount_str(average_sent_BCH_price, True) if average_sent_BCH_price is not None else "N/A"),
             _(str(" "))])
         items.append(item6)
         
