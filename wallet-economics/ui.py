@@ -54,8 +54,9 @@ class Ui(MyTreeWidget):
         history = commands.history()
         for tx in history:
             value_sats = decimal.Decimal(tx["value"]) * 100000000
-            timestamp = datetime.fromtimestamp(tx["timestamp"])
-            historical_fiat_value = window.fx.historical_value(value_sats, timestamp)
+            timestamp = tx["timestamp"]
+            date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
+            historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
                 return
                 #self.plugin.print_error("ni ni")
