@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 
 from electroncash.i18n import _
 from electroncash.util import profiler
-from electroncash_gui.qt.util import MyTreeWidget, MessageBoxMixin, MONOSPACE_FONT, rate_limited
+from electroncash_gui.qt.util import MyTreeWidget, MONOSPACE_FONT, rate_limited
 from datetime import datetime
 from electroncash.commands import Commands
 from electroncash.util import PrintError
@@ -58,8 +58,8 @@ class Ui(MyTreeWidget):
             date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
             historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
+                self.plugin.print_error("Unable to get historical_fiat_value for " + str(tx))
                 return
-                #self.plugin.print_error("ni ni")
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
             if historical_fiat_value > 0:
