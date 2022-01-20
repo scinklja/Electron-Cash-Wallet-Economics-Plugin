@@ -14,6 +14,9 @@ Its aim is to help people drop fiat and use BCH instead, by alleviating followin
 
 The plugin is not intended to calculate profit for tax purposes.
 
+## Troubleshooting
+
+Note: The Wallet Economics tab will appear blank if you do not have fiat currency values enabled.  To do so, `Tools > Preferences > Fiat > Ensure "Show history rates" checkbox is ticked`. Then restart your Electron Cash, and you should see Fiat values on the History page, and values will then load on your Wallet Economics tab.
 
 ## Donate
 
