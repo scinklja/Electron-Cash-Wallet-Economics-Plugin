@@ -15,11 +15,11 @@ from electroncash.util import PrintError
 class Ui(MyTreeWidget):
     def __init__(self, parent, plugin, wallet_name):
         MyTreeWidget.__init__(self, parent, self.create_menu, [], 0, [], deferred_updates=True)
-        self.refresh_headers()
 
         self.plugin = plugin
         self.wallet_name = wallet_name
-        
+
+
     def refresh_headers(self):
         headers = [
             _(''),
@@ -41,6 +41,11 @@ class Ui(MyTreeWidget):
     @profiler
     def on_update(self):
         self.clear()
+        if not self.parent.fx.show_history() or not self.parent.fx.is_enabled():
+            self.update_headers(["Unable to retrieve historical fiat data. Please enable 'Show history rates' and set 'Fiat currency' in Tools>Preferences>Fiat."])
+            return
+
+
         self.refresh_headers()
         window = self.parent
         commands = Commands(window.config, window.wallet, window.network, lambda: set_json(True))
@@ -58,7 +63,7 @@ class Ui(MyTreeWidget):
             date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
             historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
-                self.plugin.print_error("Unable to get historical_fiat_value for " + str(tx))
+                self.update_headers(["Unable to retrieve historical fiat data. Please change 'Fiat currency' in Tools>Preferences>Fiat."])
                 return
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
