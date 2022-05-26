@@ -25,6 +25,7 @@ class Ui(MyTreeWidget):
             _(''),
             _(self.parent.fx.ccy),
             _(self.parent.base_unit()),
+            _("Transactions")
         ]
         self.update_headers(headers)
 
@@ -54,6 +55,8 @@ class Ui(MyTreeWidget):
         total_sent_fiat = 0
         total_received_sats = 0
         total_sent_sats = 0
+        number_received_tx = 0
+        number_sent_tx = 0
 
 
         history = commands.history()
@@ -73,8 +76,10 @@ class Ui(MyTreeWidget):
                 total_sent_fiat = total_sent_fiat + historical_fiat_value
             if value_sats > 0:
                 total_received_sats = total_received_sats + value_sats
+                number_received_tx += 1
             else:
                 total_sent_sats = total_sent_sats + value_sats
+                number_sent_tx += 1
 
         if len(history) == 0:
             balance_sats = 0
@@ -103,43 +108,49 @@ class Ui(MyTreeWidget):
         item1=QTreeWidgetItem([
             _("Current balance"),
             _(window.fx.ccy_amount_str(balance_fiat, True)),
-            _(str(window.format_amount(balance_sats, whitespaces=True)))])
+            _(str(window.format_amount(balance_sats, whitespaces=True))),
+            _("")])
         items.append(item1)
 
         item2 = QTreeWidgetItem([
             _("Profit"),
             _(window.fx.ccy_amount_str(profit_fiat, True)),
-            _(str(" "))])
+            _(""),
+            _("")])
         items.append(item2)
 
         item3 = QTreeWidgetItem([
             _("Total received"),
             _(window.fx.ccy_amount_str(total_received_fiat, True)),
-            _(str(window.format_amount(total_received_sats, whitespaces=True)))])
+            _(str(window.format_amount(total_received_sats, whitespaces=True))),
+            _(str(number_received_tx))])
         items.append(item3)
 
         item4 = QTreeWidgetItem([
             _("Total sent"),
             _(window.fx.ccy_amount_str(total_sent_fiat, True)),
-            _(str(window.format_amount(total_sent_sats, whitespaces=True)))])
+            _(str(window.format_amount(total_sent_sats, whitespaces=True))),
+            _(str(number_sent_tx))])
         items.append(item4)
 
         item5 = QTreeWidgetItem([
             _("Average received BCH price"),
             _(window.fx.ccy_amount_str(average_received_BCH_price, True) if average_received_BCH_price is not None else "N/A"),
-            _(str(" "))])
+            _(""),
+            _("")])
         items.append(item5)
 
         item6 = QTreeWidgetItem([
             _("Average sent BCH price"),
             _(window.fx.ccy_amount_str(average_sent_BCH_price, True) if average_sent_BCH_price is not None else "N/A"),
-            _(str(" "))])
+            _(""),
+            _("")])
         items.append(item6)
         
         self.addTopLevelItems(items)
 
         monospaceFont = QFont(MONOSPACE_FONT)
         for item in items:
-            for column in [1, 2]:
+            for column in [1, 2, 3]:
                 item.setFont(column, monospaceFont)
                 item.setTextAlignment(column, Qt.AlignRight | Qt.AlignVCenter)
