@@ -22,7 +22,7 @@ class Ui(MyTreeWidget):
 
     def refresh_headers(self):
         headers = [
-            _(''),
+            (''),
             _(self.parent.fx.ccy),
             _(self.parent.base_unit()),
             _("Transactions")
@@ -109,14 +109,14 @@ class Ui(MyTreeWidget):
             _("Current balance"),
             _(window.fx.ccy_amount_str(balance_fiat, True)),
             _(str(window.format_amount(balance_sats, whitespaces=True))),
-            _("")])
+            ("")])
         items.append(item1)
 
         item2 = QTreeWidgetItem([
             _("Profit"),
             _(window.fx.ccy_amount_str(profit_fiat, True)),
-            _(""),
-            _("")])
+            (""),
+            ("")])
         items.append(item2)
 
         item3 = QTreeWidgetItem([
@@ -136,15 +136,15 @@ class Ui(MyTreeWidget):
         item5 = QTreeWidgetItem([
             _("Average received BCH price"),
             _(window.fx.ccy_amount_str(average_received_BCH_price, True) if average_received_BCH_price is not None else "N/A"),
-            _(""),
-            _("")])
+            (""),
+            ("")])
         items.append(item5)
 
         item6 = QTreeWidgetItem([
             _("Average sent BCH price"),
             _(window.fx.ccy_amount_str(average_sent_BCH_price, True) if average_sent_BCH_price is not None else "N/A"),
-            _(""),
-            _("")])
+            (""),
+            ("")])
         items.append(item6)
         
         self.addTopLevelItems(items)
