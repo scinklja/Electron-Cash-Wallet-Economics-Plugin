@@ -66,7 +66,7 @@ class Ui(MyTreeWidget):
             date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
             historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
-                self.update_headers(["Unable to retrieve historical fiat data. Please change 'Fiat currency' in Tools>Preferences>Fiat."])
+                self.update_headers([f"Unable to retrieve historical fiat data for the date {date} and the selected currency. Please change 'Fiat currency' in Tools>Preferences>Fiat."])
                 return
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
