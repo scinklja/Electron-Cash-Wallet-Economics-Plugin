@@ -92,6 +92,8 @@ class Ui(MyTreeWidget):
 
         profit_fiat = balance_fiat - total_historical_fiat_value
 
+        profit_percentage = profit_fiat/total_received_fiat * 100
+
         if total_received_sats == 0:
             average_received_BCH_price = None
         else:
@@ -118,6 +120,8 @@ class Ui(MyTreeWidget):
             (""),
             ("")])
         items.append(item2)
+        item2.setToolTip(0, "Profit is calculated as: current balance + total sent - total received.")
+        item2.setToolTip(1, f"{str(round(profit_percentage, 0))}% of total received {self.parent.fx.ccy}")
 
         item3 = QTreeWidgetItem([
             _("Total received"),
