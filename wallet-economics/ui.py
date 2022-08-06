@@ -83,8 +83,10 @@ class Ui(MyTreeWidget):
 
         if len(history) == 0:
             balance_sats = 0
+            balance_BCH = 0
         else:
-            balance_sats = decimal.Decimal(history[0]["balance"]) * 100000000
+            balance_BCH = decimal.Decimal(history[0]["balance"])
+            balance_sats = balance_BCH * 100000000
 
 
 
@@ -105,6 +107,9 @@ class Ui(MyTreeWidget):
             average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
 
 
+        unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
+
+
         items = []
 
         item1=QTreeWidgetItem([
@@ -119,9 +124,17 @@ class Ui(MyTreeWidget):
             _(window.fx.ccy_amount_str(profit_fiat, True)),
             (""),
             ("")])
-        items.append(item2)
         item2.setToolTip(0, "Profit is calculated as: current balance + total sent - total received.")
         item2.setToolTip(1, f"{str(round(profit_percentage, 0))}% of total received {self.parent.fx.ccy}")
+        items.append(item2)
+
+        item7 = QTreeWidgetItem([
+            _("Unrealized profit"),
+            _(window.fx.ccy_amount_str(unrealized_profit, True) if average_received_BCH_price is not None else "N/A"),
+            (""),
+            ("")])
+        item7.setToolTip(0, "Unrealized profit is based on the average received BCH price.")
+        items.append(item7)
 
         item3 = QTreeWidgetItem([
             _("Total received"),
@@ -150,7 +163,10 @@ class Ui(MyTreeWidget):
             (""),
             ("")])
         items.append(item6)
-        
+
+
+
+
         self.addTopLevelItems(items)
 
         monospaceFont = QFont(MONOSPACE_FONT)
