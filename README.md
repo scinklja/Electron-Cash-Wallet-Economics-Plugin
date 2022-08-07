@@ -14,6 +14,12 @@ Its aim is to help people drop fiat and use BCH instead, by alleviating followin
 
 The plugin is not intended to calculate profit for tax purposes.
 
+## Installation instructions
+
+1. Download the zip file.
+2. Go to your Electron Cash wallet and open the Plugin Manager (Tools > Installed Plugins).
+3. Click "Add Plugin" and navigate to the downloaded zip file.
+https://www.youtube.com/watch?v=aq1F9SDDuNE
 
 ## Donate
 
