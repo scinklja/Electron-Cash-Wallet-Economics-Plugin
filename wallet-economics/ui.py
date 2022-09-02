@@ -66,7 +66,8 @@ class Ui(MyTreeWidget):
             date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
             historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
-                self.update_headers([f"Unable to retrieve historical fiat data for the date {date} and the selected currency. Please change 'Fiat currency' in Tools>Preferences>Fiat."])
+                self.update_headers([f"""Unable to retrieve historical fiat data for the date {date} and the selected currency.
+Please check your internet connection or try changing 'Fiat currency' in Tools>Preferences>Fiat."""])
                 return
 
             total_historical_fiat_value = total_historical_fiat_value + historical_fiat_value
@@ -84,30 +85,28 @@ class Ui(MyTreeWidget):
         if len(history) == 0:
             balance_sats = 0
             balance_BCH = 0
+            balance_fiat = 0
+            profit_fiat = 0
+            profit_percentage = 0
         else:
             balance_BCH = decimal.Decimal(history[0]["balance"])
             balance_sats = balance_BCH * 100000000
+            balance_fiat = window.fx.historical_value(balance_sats, datetime.now())
+            profit_fiat = balance_fiat - total_historical_fiat_value
+            profit_percentage = profit_fiat / total_received_fiat * 100
 
-
-
-        balance_fiat = window.fx.historical_value(balance_sats, datetime.now())
-
-        profit_fiat = balance_fiat - total_historical_fiat_value
-
-        profit_percentage = profit_fiat/total_received_fiat * 100
 
         if total_received_sats == 0:
             average_received_BCH_price = None
+            unrealized_profit = 0
         else:
             average_received_BCH_price = total_received_fiat/total_received_sats * 100000000
+            unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
 
         if total_sent_sats == 0:
             average_sent_BCH_price = None
         else:
             average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
-
-
-        unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
 
 
         items = []
@@ -130,7 +129,7 @@ class Ui(MyTreeWidget):
 
         item7 = QTreeWidgetItem([
             _("Unrealized profit"),
-            _(window.fx.ccy_amount_str(unrealized_profit, True) if average_received_BCH_price is not None else "N/A"),
+            _(window.fx.ccy_amount_str(unrealized_profit, True)),
             (""),
             ("")])
         item7.setToolTip(0, "Unrealized profit is based on the average received BCH price.")
