@@ -100,13 +100,14 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             average_received_BCH_price = None
             unrealized_profit = 0
         else:
-            average_received_BCH_price = total_received_fiat/total_received_sats * 100000000
+            average_received_BCH_price = total_received_fiat / total_received_sats * 100000000
             unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
+            unrealized_profit_percentage = unrealized_profit / profit_fiat * 100
 
         if total_sent_sats == 0:
             average_sent_BCH_price = None
         else:
-            average_sent_BCH_price = total_sent_fiat/total_sent_sats * 100000000
+            average_sent_BCH_price = total_sent_fiat / total_sent_sats * 100000000
 
 
         items = []
@@ -133,6 +134,7 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             (""),
             ("")])
         item7.setToolTip(0, "Unrealized profit is based on the average received BCH price.")
+        item7.setToolTip(1, f"{str(round(unrealized_profit_percentage, 0))}% of profit")
         items.append(item7)
 
         item3 = QTreeWidgetItem([
