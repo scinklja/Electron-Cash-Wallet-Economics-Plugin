@@ -1,6 +1,6 @@
 {
     "display_name": "Wallet Economics",
-    "version": "1.0",
+    "version": "1.1",
     "description": "This plugin shows you a couple key wallet economics stats.",
     "project_url": "https://github.com/scinklja/Electron-Cash-Wallet-Economics-Plugin",
     "minimum_ec_version": "3.2",
