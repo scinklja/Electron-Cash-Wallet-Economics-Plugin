@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 import electroncash.version
 from electroncash.i18n import _
 from electroncash.plugins import BasePlugin, hook
+from . import resources_rc
 
 class Plugin(BasePlugin):
     electrumcash_qt_gui = None
@@ -90,7 +91,7 @@ class Plugin(BasePlugin):
         tab = window.create_list_tab(l)
         self.wallet_payment_tabs[wallet_name] = tab
         self.wallet_payment_lists[wallet_name] = l
-        window.tabs.addTab(tab, QIcon(":icons/preferences.png"), _('Wallet Economics'))
+        window.tabs.addTab(tab, QIcon(":econ_icon_zigzag.png"), _('Wallet Economics'))
 
     def remove_ui_for_wallet(self, wallet_name, window):
 
