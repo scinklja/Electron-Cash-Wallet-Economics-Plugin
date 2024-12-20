@@ -11,6 +11,7 @@ from datetime import datetime
 from electroncash.commands import Commands
 from electroncash.util import PrintError
 
+SATS_PER_BCH = decimal.Decimal('1e8')
 
 class Ui(MyTreeWidget):
     def __init__(self, parent, plugin, wallet_name):
@@ -61,7 +62,7 @@ class Ui(MyTreeWidget):
 
         history = commands.history()
         for tx in history:
-            value_sats = decimal.Decimal(tx["value"]) * 100000000
+            value_sats = decimal.Decimal(tx["value"]) * SATS_PER_BCH
             timestamp = tx["timestamp"]
             date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
             historical_fiat_value = window.fx.historical_value(value_sats, date)
@@ -87,31 +88,32 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             balance_BCH = 0
             balance_fiat = 0
             profit_fiat = 0
-            profit_percentage = 0
+            profit_percentage = None
         else:
             balance_BCH = decimal.Decimal(history[0]["balance"])
-            balance_sats = balance_BCH * 100000000
+            balance_sats = balance_BCH * SATS_PER_BCH
             balance_fiat = window.fx.historical_value(balance_sats, datetime.now())
             profit_fiat = balance_fiat - total_historical_fiat_value
-            profit_percentage = profit_fiat / total_received_fiat * 100
+            profit_percentage = (profit_fiat / total_received_fiat * 100) if total_received_fiat != 0 else None
 
 
         if total_received_sats == 0:
             average_received_BCH_price = None
             unrealized_profit = 0
+            unrealized_profit_percentage = None
         else:
-            average_received_BCH_price = total_received_fiat / total_received_sats * 100000000
+            average_received_BCH_price = total_received_fiat / total_received_sats * SATS_PER_BCH
             unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
-            unrealized_profit_percentage = unrealized_profit / profit_fiat * 100
+            unrealized_profit_percentage = (unrealized_profit / profit_fiat * 100) if profit_fiat != 0 else None
 
         if total_sent_sats == 0:
             average_sent_BCH_price = None
             realized_profit = 0
-            realized_profit_percentage = 0
+            realized_profit_percentage = None
         else:
-            average_sent_BCH_price = total_sent_fiat / total_sent_sats * 100000000
-            realized_profit = -total_sent_sats / 100000000 * (average_sent_BCH_price - average_received_BCH_price)
-            realized_profit_percentage = (realized_profit / profit_fiat * 100) if profit_fiat != 0 else 0
+            average_sent_BCH_price = total_sent_fiat / total_sent_sats * SATS_PER_BCH
+            realized_profit = -total_sent_sats / SATS_PER_BCH * (average_sent_BCH_price - average_received_BCH_price)
+            realized_profit_percentage = (realized_profit / profit_fiat * 100) if profit_fiat != 0 else None
 
 
         items = []
@@ -129,7 +131,7 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             (""),
             ("")])
         item2.setToolTip(0, "Profit is calculated as: current balance + total sent - total received.")
-        item2.setToolTip(1, f"{str(round(profit_percentage, 0))}% of total received {self.parent.fx.ccy}")
+        item2.setToolTip(1, f"{str(round(profit_percentage, 0))}% of total received {self.parent.fx.ccy}" if profit_percentage is not None else "N/A")
         items.append(item2)
 
         item7 = QTreeWidgetItem([
@@ -137,8 +139,8 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             _(window.fx.ccy_amount_str(unrealized_profit, True)),
             (""),
             ("")])
-        item7.setToolTip(0, "Unrealized profit is based on the average received BCH price.")
-        item7.setToolTip(1, f"{str(round(unrealized_profit_percentage, 0))}% of profit")
+        item7.setToolTip(0, "Unrealized profit is based on the average received and current BCH price.")
+        item7.setToolTip(1, f"{str(round(unrealized_profit_percentage, 0))}% of profit" if unrealized_profit_percentage is not None else "N/A")
         items.append(item7)
 
         item8 = QTreeWidgetItem([
@@ -147,7 +149,7 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             (""),
             ("")])
         item8.setToolTip(0, "Realized profit is based on the average received and average sent BCH price.")
-        item8.setToolTip(1, f"{str(round(realized_profit_percentage, 0))}% of profit")
+        item8.setToolTip(1, f"{str(round(realized_profit_percentage, 0))}% of profit" if realized_profit_percentage is not None else "N/A")
         items.append(item8)
 
         item3 = QTreeWidgetItem([
