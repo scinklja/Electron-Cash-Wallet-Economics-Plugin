@@ -62,9 +62,15 @@ class Ui(MyTreeWidget):
 
         history = commands.history()
         for tx in history:
-            value_sats = decimal.Decimal(tx["value"]) * SATS_PER_BCH
             timestamp = tx["timestamp"]
-            date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0   
+            date = datetime.fromtimestamp(timestamp) if timestamp != 0 else datetime.now()  #unconfirmed transactions have timestamp 0
+
+            try:
+                value_sats = decimal.Decimal(tx["value"]) * SATS_PER_BCH
+            except decimal.InvalidOperation:
+                self.update_headers(["Invalid transaction value encountered for the date {date}."])
+                return
+
             historical_fiat_value = window.fx.historical_value(value_sats, date)
             if historical_fiat_value is None:
                 self.update_headers([f"""Unable to retrieve historical fiat data for the date {date} and the selected currency.
