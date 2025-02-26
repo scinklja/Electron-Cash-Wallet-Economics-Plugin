@@ -107,19 +107,23 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             average_received_BCH_price = None
             unrealized_profit = 0
             unrealized_profit_percentage = None
+            unrealized_profit_percentage_of_total_received_fiat = None
         else:
             average_received_BCH_price = total_received_fiat / total_received_sats * SATS_PER_BCH
             unrealized_profit = balance_fiat - (balance_BCH * average_received_BCH_price)
             unrealized_profit_percentage = (unrealized_profit / profit_fiat * 100) if profit_fiat != 0 else None
+            unrealized_profit_percentage_of_total_received_fiat = unrealized_profit / total_received_fiat * 100
 
         if total_sent_sats == 0:
             average_sent_BCH_price = None
             realized_profit = 0
             realized_profit_percentage = None
+            realized_profit_percentage_of_total_received_fiat = None
         else:
             average_sent_BCH_price = total_sent_fiat / total_sent_sats * SATS_PER_BCH
             realized_profit = -total_sent_sats / SATS_PER_BCH * (average_sent_BCH_price - average_received_BCH_price)
             realized_profit_percentage = (realized_profit / profit_fiat * 100) if profit_fiat != 0 else None
+            realized_profit_percentage_of_total_received_fiat = realized_profit / total_received_fiat * 100
 
 
         items = []
@@ -146,7 +150,12 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             (""),
             ("")])
         item7.setToolTip(0, "Unrealized profit is based on the average received and current BCH price.")
-        item7.setToolTip(1, f"{str(round(unrealized_profit_percentage, 0))}% of profit" if unrealized_profit_percentage is not None else "N/A")
+        lines = []
+        if unrealized_profit_percentage is not None:
+            lines.append(f"{round(unrealized_profit_percentage, 0)}% of profit")
+        if unrealized_profit_percentage_of_total_received_fiat is not None:
+            lines.append(f"{round(unrealized_profit_percentage_of_total_received_fiat, 0)}% of total received {self.parent.fx.ccy}")
+        item7.setToolTip(1, "\n".join(lines) if lines else "N/A")
         items.append(item7)
 
         item8 = QTreeWidgetItem([
@@ -154,8 +163,13 @@ Please check your internet connection or try changing 'Fiat currency' in Tools>P
             _(window.fx.ccy_amount_str(realized_profit, True)),
             (""),
             ("")])
-        item8.setToolTip(0, "Realized profit is based on the average received and average sent BCH price.")
-        item8.setToolTip(1, f"{str(round(realized_profit_percentage, 0))}% of profit" if realized_profit_percentage is not None else "N/A")
+        item8.setToolTip(0, "Realized profit is based on the average received and average sent BCH price.")        
+        lines = []
+        if realized_profit_percentage is not None:
+            lines.append(f"{round(realized_profit_percentage, 0)}% of profit")
+        if realized_profit_percentage_of_total_received_fiat is not None:
+            lines.append(f"{round(realized_profit_percentage_of_total_received_fiat, 0)}% of total received {self.parent.fx.ccy}")
+        item8.setToolTip(1, "\n".join(lines) if lines else "N/A")
         items.append(item8)
 
         item3 = QTreeWidgetItem([
